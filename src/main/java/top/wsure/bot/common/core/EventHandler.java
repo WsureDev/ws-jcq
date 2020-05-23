@@ -14,6 +14,7 @@ import top.wsure.bot.utils.CommandUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.meowy.cqp.jcq.entity.IMsg.MSG_IGNORE;
@@ -52,26 +53,42 @@ public class EventHandler {
                     break;
             }
         }
-        List<CommandDo> commands = CommandUtils.getCommand(message.getMsg());
         List<Method> methods = botEventMap.get(message.getEvent().getEvent());
-        if(CollectionUtils.isNotEmpty(methods)){
-            commands.forEach( cmd -> methods.stream().filter(method ->
-                    Arrays.asList( method.getAnnotation(BotEventType.class).alias()).contains(cmd.getAlia()) &&
-                            method.getDeclaringClass().getAnnotation(BotEvent.class).name().equals(cmd.getComponentName()) &&
-                    Arrays.stream(method.getDeclaringClass().getAnnotation(BotEvent.class).level())
-                            .anyMatch(v-> CommandAuthorityEnum.isAllowed(message.getFromQQ(),message.getFromGroup(),v))
-            ).forEach( method -> {
-                try {
-//                    log.info("开始执行" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
-                    method.invoke(method.getDeclaringClass().newInstance(),message,cmd);
-//                    log.info("执行结束" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
-                } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                    log.warning(cmd.getComponentName()+" > " + cmd.getCommand() + " " + message.getEvent().getEvent()+"执行失败，原因:"+e.getMessage());
-                    e.printStackTrace();
-                }
-            }));
+        if(message.getEvent().equals(EventsEnum.GROUP_MSG) || message.getEvent().equals(EventsEnum.PRIVATE_MSG) ) {
 
+            List<CommandDo> commands = CommandUtils.getCommand(message.getMsg());
+            if(CollectionUtils.isNotEmpty(methods)){
+                commands.forEach( cmd -> methods.stream().filter(method ->
+                        Arrays.asList( method.getAnnotation(BotEventType.class).alias()).contains(cmd.getAlia()) &&
+                                method.getDeclaringClass().getAnnotation(BotEvent.class).name().equals(cmd.getComponentName()) &&
+                                Arrays.stream(method.getDeclaringClass().getAnnotation(BotEvent.class).level())
+                                        .anyMatch(v-> CommandAuthorityEnum.isAllowed(message.getFromQQ(),message.getFromGroup(),v))
+                ).forEach( method -> {
+                    try {
+//                    log.info("开始执行" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
+                        method.invoke(method.getDeclaringClass().newInstance(),message,cmd);
+//                    log.info("执行结束" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
+                    } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                        log.warning(cmd.getComponentName()+" > " + cmd.getCommand() + " " + message.getEvent().getEvent()+"执行失败，原因:"+e.getMessage());
+                        e.printStackTrace();
+                    }
+                }));
+            }
+        } else {
+            if(CollectionUtils.isNotEmpty(methods)){
+                methods.stream().sorted(Comparator.comparingInt(v -> v.getAnnotation(BotEventType.class).weight())).forEach( method -> {
+                    try {
+//                    log.info("开始执行" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
+                        method.invoke(method.getDeclaringClass().newInstance(),message);
+//                    log.info("执行结束" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
+                    } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                        log.warning(message.getEvent().getEvent()+" > " + method.getName() + " " + message.getEvent().getEvent()+"执行失败，原因:"+e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
         }
+
         return MSG_IGNORE;
     }
 }

@@ -18,4 +18,5 @@ import java.lang.annotation.*;
 public @interface BotEventType {
     EventsEnum[] type() default {EventsEnum.PRIVATE_MSG};
     String[] alias() default {};
+    int weight() default 100;
 }

@@ -298,15 +298,7 @@ public abstract class Bot extends JcqAppAbstract implements ICQVer, IMsg, IReque
      * @return 关于返回值说明, 见 {@link #privateMsg 私聊消息} 的方法
      */
     public int groupAdmin(int subType, int sendTime, long fromGroup, long beingOperateQQ) {
-        // 这里处理消息
-        switch (subType){
-            case 1:
-                CQ.sendGroupMsg(fromGroup,"恭喜"+CC.at(beingOperateQQ)+"成为狗管理");
-                break;
-            case 2:
-                CQ.sendGroupMsg(fromGroup,"恭喜"+CC.at(beingOperateQQ)+"被下了狗管理");
-                break;
-        }
+
         return EventHandler.getInstance().eventProcess(MessageDo.builder()
                 .event(EventsEnum.GROUP_ADMIN)
                 .subType(subType)

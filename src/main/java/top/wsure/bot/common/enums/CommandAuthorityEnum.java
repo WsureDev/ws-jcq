@@ -25,8 +25,10 @@ public enum CommandAuthorityEnum {
 
     private int level;
 
-    public static int getAuthority(long fromQQ,Long fromGroup){
-        if(isMaster(fromQQ))
+    public static int getAuthority(Long fromQQ,Long fromGroup){
+        if(fromQQ == null)
+            return MEMBER.getLevel();
+        else if(isMaster(fromQQ))
             return MASTER.getLevel();
         else if(isDeveloper(fromQQ))
             return DEVELOPER.getLevel();

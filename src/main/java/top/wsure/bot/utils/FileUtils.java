@@ -22,7 +22,7 @@ public class FileUtils {
     public static RobotConfigDo importYaml() throws BotException{
         InputStream in = null;
         CQ.logInfo("yamlPath",CQ.getAppDirectory());
-        File dumpFile = new File(CQ.getAppDirectory()+"setting.yaml");
+        File dumpFile = new File(CQ.getAppDirectory()+"/setting.yaml");
         try {
             if(dumpFile.exists()){
                 in = new FileInputStream(dumpFile);

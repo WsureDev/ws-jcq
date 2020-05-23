@@ -1,2 +1,5 @@
 # Project exclude paths
 /target/
+.idea/
+
+ws-jcq.iml

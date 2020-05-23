@@ -182,7 +182,7 @@ public class WsureCoolQ {
 
     public String getAppDirectory() {
         if(this.innerCQ.getClass().equals(CQDebug.class))
-            return this.innerCQ.getAppDirectory()+"data/app/org.meowy.cqp.jcq/app/"+ AppID + "/";
+            return this.innerCQ.getAppDirectory()+"data/app/org.meowy.cqp.jcq/app/"+ AppID;
         return this.innerCQ.getAppDirectory();
     }
 
