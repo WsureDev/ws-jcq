@@ -2,6 +2,7 @@ package top.wsure.bot.utils;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.meowy.cqp.jcq.message.CQCode;
 import top.wsure.bot.entity.CommandDo;
 import top.wsure.bot.entity.MenuDo;
 import top.wsure.bot.entity.RobotConfigDo;
@@ -25,7 +26,7 @@ public class CommandUtils {
 
 
     public static List<CommandDo> getCommand(String input){
-        String in  = input.replace(getAtMe(),"");
+        String in  = CQCode.decode(input.replace(getAtMe(),""));
 
         List<CommandDo> commandList = ROBOT_COMMANDS;
         return commandList.stream()
@@ -40,7 +41,7 @@ public class CommandUtils {
 
         List<MenuDo> menus = ROBOT_CONFIG.getMenu();
         return menus.stream()
-                .filter( menu -> StringUtils.isNotBlank(menu.getAnswer()) && menu.getQuestion().equals(input))
+                .filter( menu -> StringUtils.isNotBlank(menu.getAnswer()) && menu.getQuestion().equals(in))
                 .collect(Collectors.toList());
     }
 
@@ -80,6 +81,8 @@ public class CommandUtils {
         if(!cmd.isEnable()){
             return false;
         }
+        if(cmd.getComponentType().equals(ComponentEnum.LOCAL_LISTENER))
+            return true;
 
         String command = cmd.getCommand().matches("[a-zA-Z]+") ?
                 ( "(("+cmd.getCommand()+")|("+cmd.getCommand().toUpperCase()+"))" ) :

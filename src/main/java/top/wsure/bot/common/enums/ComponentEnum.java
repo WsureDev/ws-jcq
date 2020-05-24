@@ -19,6 +19,7 @@ public enum ComponentEnum {
     LOCAL_QUESTION("localQuestion","预设问答",false,false),
     LOCAL_GAME_NEED_PARAM("localGameNeedParam","本地游戏有参",false,true),
     LOCAL_GAME_WITHOUT_PARAM("localGameWithoutParam","本地游戏无参",false,false),
+    LOCAL_LISTENER("localListener","本地监听器",false,false),
     ;
 
     private String type;

@@ -145,39 +145,75 @@ public class WsureCoolQ {
     }
 
     public int logTrace(String category, String content) {
-        return this.innerCQ.logTrace(category,content);
+        return this.innerCQ.logTrace(decodeCQCode(category),decodeCQCode(content));
+    }
+    public int logTrace(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logTrace(category,content);
+        return this.innerCQ.logTrace(decodeCQCode(category),decodeCQCode(content));
     }
 
     public int logDebug(String category, String content) {
-        return this.innerCQ.logDebug(category, content);
+        return this.innerCQ.logDebug(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logDebug(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logDebug(category, content);
+        return this.innerCQ.logDebug(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logInfo(String category, String content) {
-        return this.innerCQ.logInfo(category, content);
+        return this.innerCQ.logInfo(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logInfo(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logInfo(category, content);
+        return this.innerCQ.logInfo(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logInfoRecv(String category, String content) {
-        return this.innerCQ.logInfoRecv(category, content);
+        return this.innerCQ.logInfoRecv(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logInfoRecv(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logInfoRecv(category, content);
+        return this.innerCQ.logInfoRecv(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logInfoSend(String category, String content) {
-        return this.innerCQ.logInfoSend(category, content);
+        return this.innerCQ.logInfoSend(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logInfoSend(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logInfoSend(category, content);
+        return this.innerCQ.logInfoSend(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logInfoSuccess(String category, String content) {
-        return this.innerCQ.logInfoSuccess(category, content);
+        return this.innerCQ.logInfoSuccess(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logInfoSuccess(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logInfoSuccess(category, content);
+        return this.innerCQ.logInfoSuccess(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logWarning(String category, String content) {
-        return this.innerCQ.logWarning(category, content);
+        return this.innerCQ.logWarning(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logWarning(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logWarning(category, content);
+        return this.innerCQ.logWarning(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logError(String category, String content) {
-        return this.innerCQ.logError(category, content);
+        return this.innerCQ.logError(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logError(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logError(category, content);
+        return this.innerCQ.logError(decodeCQCode(category), decodeCQCode(content));
     }
 
     public int logFatal(String category, String content) {
-        return this.innerCQ.logFatal(category, content);
+        return this.innerCQ.logFatal(decodeCQCode(category), decodeCQCode(content));
+    }
+    public int logFatal(String category, String content,boolean origin) {
+        if(origin) return this.innerCQ.logFatal(category, content);
+        return this.innerCQ.logFatal(decodeCQCode(category), decodeCQCode(content));
     }
 
     public String getAppDirectory() {
@@ -316,5 +352,19 @@ public class WsureCoolQ {
 
     public CQStatus getLastStatus() {
         return this.innerCQ.getLastStatus();
+    }
+
+
+    /**
+     * 爷吐了，每次特么因为cq码debug折腾好久，淦！
+     * @param input
+     * @return
+     */
+    public static String decodeCQCode(String input){
+        input = org.meowy.cqp.jcq.util.StringUtils.stringReplace(input, "&#91;", "【");
+        input = org.meowy.cqp.jcq.util.StringUtils.stringReplace(input, "&#93;", "】");
+        input = org.meowy.cqp.jcq.util.StringUtils.stringReplace(input, "&#44;", "，");
+        input = org.meowy.cqp.jcq.util.StringUtils.stringReplace(input, "&amp;", "＆");
+        return input;
     }
 }

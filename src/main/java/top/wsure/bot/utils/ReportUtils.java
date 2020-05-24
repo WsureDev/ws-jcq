@@ -6,6 +6,7 @@ import org.meowy.cqp.jcq.entity.Member;
 import top.wsure.bot.entity.PersonDo;
 
 import java.util.List;
+import java.util.Random;
 
 import static top.wsure.bot.Bot.CQ;
 import static top.wsure.bot.common.config.Constants.ROBOT_CONFIG;
@@ -64,21 +65,51 @@ public class ReportUtils {
     }
 
     public static void sendPrivateToPersons(String message,List<PersonDo> list){
-        if(CollectionUtils.isNotEmpty(list)) {
-            list.forEach(master -> CQ.sendPrivateMsg(master.getQq(), message));
-        }
+        ((Runnable) () -> {
+            if (CollectionUtils.isNotEmpty(list)) {
+                list.forEach(master -> {
+                    CQ.sendPrivateMsg(master.getQq(), message);
+                    try {
+                        Thread.sleep(3000+new Random().nextInt(1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        CQ.logInfo("sendPrivateToPersons发送失败","QQ:"+master.getQq()+",message:"+message);
+                    }
+                });
+            }
+        }).run();
     }
 
     public static void sendPrivateToMembers(String message, List<Member> list){
-        if(CollectionUtils.isNotEmpty(list)) {
-            list.forEach(master -> CQ.sendPrivateMsg(master.getQQId(), message));
-        }
+        ((Runnable) () -> {
+            if (CollectionUtils.isNotEmpty(list)) {
+                list.forEach(master -> {
+                    CQ.sendPrivateMsg(master.getQQId(), message);
+                    try {
+                        Thread.sleep(3000+new Random().nextInt(1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        CQ.logInfo("sendPrivateToMembers发送失败","QQ:"+master.getQQId()+",message:"+message);
+                    }
+                });
+            }
+        }).run();
     }
 
     public static void sendGroupMessage(String message, List<Group> list){
-        if(CollectionUtils.isNotEmpty(list)){
-            list.forEach(group -> CQ.sendGroupMsg(group.getId(),message));
-        }
+        ((Runnable) () -> {
+            if (CollectionUtils.isNotEmpty(list)) {
+                list.forEach(group -> {
+                    CQ.sendGroupMsg(group.getId(), message);
+                    try {
+                        Thread.sleep(3000+new Random().nextInt(1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        CQ.logInfo("sendGroupMessage发送失败","groupId:"+group.getId()+",message:"+message);
+                    }
+                });
+            }
+        }).run();
     }
 
     public static boolean isMaster(Long qq){

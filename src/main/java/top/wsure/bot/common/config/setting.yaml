@@ -122,10 +122,6 @@ commands:
     command: 发送全部群
     componentName: base
     type: localGameNeedParam
-  - alia: send
-    command: 发送全部群
-    componentName: base
-    type: localGameNeedParam
 
 # 禁用的模块
 disable:

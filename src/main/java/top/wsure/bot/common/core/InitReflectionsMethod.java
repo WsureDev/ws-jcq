@@ -2,10 +2,7 @@ package top.wsure.bot.common.core;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import top.wsure.bot.common.annotation.ApiAfter;
-import top.wsure.bot.common.annotation.ApiBefore;
-import top.wsure.bot.common.annotation.BotEventType;
-import top.wsure.bot.common.annotation.Cache;
+import top.wsure.bot.common.annotation.*;
 import top.wsure.bot.common.cache.CacheManagerImpl;
 import top.wsure.bot.common.cache.EntityCache;
 import top.wsure.bot.common.enums.CacheEnum;
@@ -16,6 +13,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static top.wsure.bot.common.config.Constants.*;
 
@@ -27,6 +26,16 @@ import static top.wsure.bot.common.config.Constants.*;
  */
 public class InitReflectionsMethod {
     public static void init(){
+        Set<Class<?>> components = ReflectionsUtils.getFullReflections(BotEvent.class);
+        if(CollectionUtils.isNotEmpty(components))
+            COMPONENTS_MAP = components.stream().collect(Collectors.toConcurrentMap(Class::getName, v-> {
+                try {
+                    return v.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }));
         List<Method> methods = new ArrayList<>(ReflectionsUtils.getAnnotatedMethod(BotEventType.class));
         if(CollectionUtils.isNotEmpty(methods))
             methods.forEach( method -> Arrays.stream(method.getAnnotation(BotEventType.class).type()).forEach(

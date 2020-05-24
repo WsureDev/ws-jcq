@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * FileName: Constants
@@ -27,6 +29,7 @@ public class Constants {
 //    public static CacheManagerImpl messageCache = new CacheManagerImpl(CacheEnum.MESSAGE_CACHE.getName());
     public static RobotConfigDo ROBOT_CONFIG ;
     public static List<CommandDo> ROBOT_COMMANDS ;
+    public static ConcurrentMap<String,Object> COMPONENTS_MAP = new ConcurrentHashMap<>();
     public static Map<String , List<Method>> botEventMap = new HashMap<>();
     public static Map<String , List<Class<?>>> botApiAfterMap = new HashMap<>();
     public static Map<String , List<Class<?>>> botApiBeforeMap = new HashMap<>();

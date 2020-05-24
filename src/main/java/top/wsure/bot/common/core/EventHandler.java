@@ -2,6 +2,8 @@ package top.wsure.bot.common.core;
 
 import lombok.extern.java.Log;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.meowy.cqp.jcq.message.CQCode;
 import top.wsure.bot.common.annotation.BotEvent;
 import top.wsure.bot.common.annotation.BotEventType;
 import top.wsure.bot.common.enums.CommandAuthorityEnum;
@@ -16,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.meowy.cqp.jcq.entity.IMsg.MSG_IGNORE;
 import static top.wsure.bot.common.config.Constants.*;
@@ -55,8 +58,9 @@ public class EventHandler {
         }
         List<Method> methods = botEventMap.get(message.getEvent().getEvent());
         if(message.getEvent().equals(EventsEnum.GROUP_MSG) || message.getEvent().equals(EventsEnum.PRIVATE_MSG) ) {
-
+            CQ.logDebug("debug getCommand","input:" + message.getMsg());
             List<CommandDo> commands = CommandUtils.getCommand(message.getMsg());
+            CQ.logDebug("debug result",commands.stream().map(CommandDo::getCommand).collect(Collectors.joining(",")));
             if(CollectionUtils.isNotEmpty(methods)){
                 commands.forEach( cmd -> methods.stream().filter(method ->
                         Arrays.asList( method.getAnnotation(BotEventType.class).alias()).contains(cmd.getAlia()) &&
@@ -66,9 +70,14 @@ public class EventHandler {
                 ).forEach( method -> {
                     try {
 //                    log.info("开始执行" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
-                        method.invoke(method.getDeclaringClass().newInstance(),message,cmd);
+                        Object instance = COMPONENTS_MAP.get(method.getDeclaringClass().getName());
+                        if(instance != null){
+                            method.invoke(instance,message,cmd);
+                        } else {
+                            CQ.logWarning(cmd.getCommand()+"执行失败","把你 "+method.getDeclaringClass().getName()+" 的无参构造给我交了" );
+                        }
 //                    log.info("执行结束" + cmd.getCommand() + " " + message.getEvent().getEvent() +" 方法"+method.getName());
-                    } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         log.warning(cmd.getComponentName()+" > " + cmd.getCommand() + " " + message.getEvent().getEvent()+"执行失败，原因:"+e.getMessage());
                         e.printStackTrace();
                     }

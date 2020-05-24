@@ -1,8 +1,11 @@
 package top.wsure.bot;
 
 import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.meowy.cqp.jcq.entity.*;
 import org.meowy.cqp.jcq.event.JcqAppAbstract;
+import top.wsure.bot.common.annotation.BotEventType;
 import top.wsure.bot.common.core.*;
 import top.wsure.bot.common.exceptions.BotException;
 import top.wsure.bot.entity.MessageDo;
@@ -15,6 +18,7 @@ import static top.wsure.bot.common.config.Constants.*;
 
 import javax.swing.*;
 import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -107,7 +111,19 @@ public abstract class Bot extends JcqAppAbstract implements ICQVer, IMsg, IReque
 
         // 注解方式加载各个模块
         InitReflectionsMethod.init();
-        botEventMap.forEach( (k,v)-> CQ.logInfo(k,v.stream().map(Method::getName).collect(Collectors.joining(","))));
+        CQ.logInfo("注解绑定事件","注解绑定命令别名和实际执行方法名");
+        botEventMap.forEach( (k,v)-> v.stream()
+                .map(method -> Arrays.toString(method.getAnnotation(BotEventType.class).alias()) + " >>> " +
+                        method.getName())
+                .forEach( alia -> CQ.logInfo(k,alia)));
+
+        CQ.logInfo("yaml配置读取结果","以下为群聊、私聊消息类型事件绑定的命令");
+        CQ.logInfo("配置的功能别名","实际命令(命令参数说明)");
+        if(CollectionUtils.isNotEmpty(ROBOT_COMMANDS)){
+            ROBOT_COMMANDS.forEach( cmd -> CQ.logInfo("alia:"+cmd.getAlia(),"command:"+cmd.getCommand()
+                    + " (type:" + cmd.getComponentType().getDesc() + ")"
+            ));
+        }
 
         CQ.logInfo("startup()","week up!");
         // 返回如：D:\CoolQ\data\app\org.meowy.cqp.jcq\data\app\com.example.demo\
