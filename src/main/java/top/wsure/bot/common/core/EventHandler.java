@@ -58,9 +58,7 @@ public class EventHandler {
         }
         List<Method> methods = botEventMap.get(message.getEvent().getEvent());
         if(message.getEvent().equals(EventsEnum.GROUP_MSG) || message.getEvent().equals(EventsEnum.PRIVATE_MSG) ) {
-            CQ.logDebug("debug getCommand","input:" + message.getMsg());
             List<CommandDo> commands = CommandUtils.getCommand(message.getMsg());
-            CQ.logDebug("debug result",commands.stream().map(CommandDo::getCommand).collect(Collectors.joining(",")));
             if(CollectionUtils.isNotEmpty(methods)){
                 commands.forEach( cmd -> methods.stream().filter(method ->
                         Arrays.asList( method.getAnnotation(BotEventType.class).alias()).contains(cmd.getAlia()) &&
