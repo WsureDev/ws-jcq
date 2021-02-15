@@ -1,4 +1,5 @@
-# ws-jcq
+# ws-jcq(已废弃，JCQ无了)
+## 此项目将重已重构，请移步 [【warframe-world-state】](https://github.com/WsureDev/warframe-world-state)
 一个jcq轮子，俺自己用
 #### 这是什么
 这是一个JCQ的轮子，为 [warframe-bot](https://github.com/WsureDev/warframe-bot) 这个项目量身打造
